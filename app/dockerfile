@@ -1,0 +1,28 @@
+# Usa una imagen base oficial de Python
+FROM python:3.10-slim
+
+# Actualiza pip y setuptools
+RUN pip install --upgrade pip setuptools
+
+# Instala las dependencias del sistema necesarias para mysqlclient, psycopg2 y herramientas de compilación
+RUN apt-get update && apt-get install -y \
+    pkg-config \
+    libmariadb-dev \
+    mariadb-client \
+    libpq-dev \  
+    build-essential
+
+# Establece el directorio de trabajo
+WORKDIR /app
+
+# Copia los archivos de la aplicación
+COPY . .
+
+# Instala las dependencias de Python desde el archivo requirements.txt
+RUN pip install -r requirements.txt
+
+# Expone el puerto 5000 para Flask (ajustado para coincidir con la configuración típica de Flask)
+EXPOSE 5000
+
+# Comando para ejecutar ambos scripts secuencialmente
+CMD ["python","app.py"]
